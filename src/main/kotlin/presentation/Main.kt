@@ -35,6 +35,8 @@ import presentation.home.HomePage
 import presentation.home.store.Output
 import presentation.home.viewmodel.HomeViewModel
 import presentation.other.extension.route.DesktopRouting
+import presentation.privacy.PrivacyPolicy
+import presentation.privacy.viewmodel.PrivacyPolicyViewModel
 import presentation.settings.SettingsPage
 import presentation.settings.viewmodel.SettingsViewModel
 import presentation.testmenu.TestMenu
@@ -122,6 +124,15 @@ fun main() = run {
                             }
                         )
                     }
+                    val privacyPolicyViewModel = viewModel(modelClass = PrivacyPolicyViewModel::class) {
+                        PrivacyPolicyViewModel(
+                            output = { output ->
+                                when (output) {
+                                    presentation.privacy.store.Output.BackButtonClicked -> navigator.popBackStack()
+                                }
+                            }
+                        )
+                    }
                     val authorizationViewModel = viewModel(modelClass = AuthorizationViewModel::class) {
                         AuthorizationViewModel(
                             output = { output ->
@@ -166,6 +177,8 @@ fun main() = run {
                                         trafficLightTestViewModel.onEvent(Event.InitStartData(testDTO = output.testDTO))
                                         navigator.navigate(route = DesktopRouting.testmenu)
                                     }
+
+                                    presentation.authorization.login.store.Output.OpenPrivacyPolicy -> navigator.navigate(route = DesktopRouting.privacyPolicy)
                                 }
                             }
                         )
@@ -198,6 +211,12 @@ fun main() = run {
                         scene(route = DesktopRouting.login) {
                             println("Login page rendered")
                             Login(onEvent = loginViewModel::onEvent, loginViewModel.state.collectAsState())
+                        }
+//                        endregion
+
+//                        region::Privacy policy
+                        scene(route = DesktopRouting.privacyPolicy) {
+                            PrivacyPolicy(onEvent = privacyPolicyViewModel::onEvent)
                         }
 //                        endregion
 
